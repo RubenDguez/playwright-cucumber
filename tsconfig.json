@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "outDir": "dist",
+    "types": ["@playwright/test", "node"],
+    "baseUrl": ".",
+    "paths": {
+      "@support/*": ["tests/support/*"],
+      "@pages/*": ["tests/pages/*"],
+      "@steps/*": ["tests/steps/*"],
+    }
+  },
+  "include": ["tests/**/*.ts"]
+}

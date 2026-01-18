@@ -1,0 +1,74 @@
+# Dependencies
+node_modules/
+jspm_packages/
+web_modules/
+
+# Build outputs
+build/
+dist/
+lib/
+out/
+
+# Test reports and coverage
+coverage/
+.nyc_output/
+test-results/
+playwright-report/
+allure-results/
+allure-report/
+cucumber-report.html
+cucumber-reports/
+
+# Cache and temporary files
+.cache/
+.parcel-cache/
+tmp/
+temp/
+.tmp/
+*.tsbuildinfo
+
+# Framework outputs
+.next/
+.nuxt/
+.vuepress/dist/
+.docusaurus/
+.serverless/
+
+# Package manager files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+.yarn/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Environment files
+.env*
+
+# Git files
+.git/
+.gitignore
+
+# Prettier itself
+.prettierignore
+
+# Generated files
+*.min.js
+*.min.css
+
+# Documentation
+README.md
+CHANGELOG.md
+LICENSE
