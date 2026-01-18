@@ -2,7 +2,7 @@ import { IWorldOptions, setDefaultTimeout, setWorldConstructor, World } from '@c
 import { Browser, BrowserContext, Page } from '@playwright/test';
 import HomePage from '@pages/home';
 
-export class CustomWorld extends World {
+export class Fixture extends World {
   browser!: Browser;
   context!: BrowserContext;
   page!: Page;
@@ -15,4 +15,4 @@ export class CustomWorld extends World {
 }
 
 setDefaultTimeout(120000);
-setWorldConstructor(CustomWorld);
+setWorldConstructor(Fixture);

@@ -1,16 +1,16 @@
 import { Given, Then, When } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
-import { CustomWorld } from 'tests/support/world';
+import { Fixture } from 'tests/support/world';
 
-Given('I am on the BestBuy website', async function (this: CustomWorld) {
+Given('I am on the BestBuy website', async function (this: Fixture) {
   await this.homePage.navigate();
 });
 
-When('I search for Headphones', async function (this: CustomWorld) {
+When('I search for Headphones', async function (this: Fixture) {
   await this.homePage.searchForProduct('Headphones');
 });
 
-Then('I should see multiple products related the search', async function (this: CustomWorld) {
+Then('I should see multiple products related the search', async function (this: Fixture) {
   await expect(this.homePage.resultsForText).toBeVisible();
 
   const products = await this.homePage.skuBlocks.all();

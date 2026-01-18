@@ -1,5 +1,5 @@
 import { Before, After, BeforeAll, AfterAll, BeforeStep, AfterStep } from '@cucumber/cucumber';
-import { CustomWorld } from 'tests/support/world';
+import { Fixture } from 'tests/support/world';
 import { chromium } from '@playwright/test';
 import HomePage from '@pages/home';
 
@@ -17,7 +17,7 @@ BeforeAll(async function () {
  * Used for scenario-level setup like browser initialization, navigation, etc.
  * This is where you typically set up the test environment for each scenario
  */
-Before(async function (this: CustomWorld) {
+Before(async function (this: Fixture) {
   this.browser = await chromium.launch({ headless: false });
   this.context = await this.browser.newContext();
   this.page = await this.context.newPage();
@@ -30,7 +30,7 @@ Before(async function (this: CustomWorld) {
  * Used for step-level preparation, logging, or state validation
  * Can be useful for debugging or adding custom behavior before each step execution
  */
-BeforeStep(async function (this: CustomWorld) {
+BeforeStep(async function (this: Fixture) {
   // Pre-step logic here
 });
 
@@ -39,7 +39,7 @@ BeforeStep(async function (this: CustomWorld) {
  * Used for step-level cleanup, screenshot capture on failures, or logging
  * Currently captures screenshots when steps fail for debugging purposes
  */
-AfterStep(async function (this: CustomWorld, { result }) {
+AfterStep(async function (this: Fixture, { result }) {
   if (result?.status === 'FAILED') {
     const screenshot = await this.page.screenshot();
     this.attach(screenshot, 'image/png');
@@ -51,7 +51,7 @@ AfterStep(async function (this: CustomWorld, { result }) {
  * Used for scenario-level cleanup like closing browsers, clearing data, etc.
  * This ensures proper cleanup after each test scenario completes
  */
-After(async function (this: CustomWorld) {
+After(async function (this: Fixture) {
   await this.page.close();
   await this.context.close();
   await this.browser.close();
