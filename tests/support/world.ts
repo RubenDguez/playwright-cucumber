@@ -1,13 +1,14 @@
 import { IWorldOptions, setDefaultTimeout, setWorldConstructor, World } from '@cucumber/cucumber';
 import { Browser, BrowserContext, Page } from '@playwright/test';
-import HomePage from '@pages/home';
+import LoginPage from '@pages/Login';
 
 export class Fixture extends World {
   browser!: Browser;
   context!: BrowserContext;
   page!: Page;
 
-  homePage!: HomePage;
+  loginPage!: LoginPage;
+  currentStepKeyword?: string;
 
   constructor(options: IWorldOptions) {
     super(options);

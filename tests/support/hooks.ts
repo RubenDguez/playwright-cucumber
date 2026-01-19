@@ -1,7 +1,8 @@
-import { Before, After, BeforeAll, AfterAll, BeforeStep, AfterStep } from '@cucumber/cucumber';
+import { Before, After, BeforeAll, AfterAll, BeforeStep, AfterStep, Status } from '@cucumber/cucumber';
 import { Fixture } from 'tests/support/world';
 import { chromium } from '@playwright/test';
-import HomePage from '@pages/home';
+import LoginPage from '@pages/Login';
+import chalk from 'chalk';
 
 /**
  * BeforeAll hook - Runs once before all scenarios in the test run
@@ -18,11 +19,11 @@ BeforeAll(async function () {
  * This is where you typically set up the test environment for each scenario
  */
 Before(async function (this: Fixture) {
-  this.browser = await chromium.launch({ headless: false });
+  this.browser = await chromium.launch({ headless: true, timeout: 60000 });
   this.context = await this.browser.newContext();
   this.page = await this.context.newPage();
 
-  this.homePage = new HomePage(this.page);
+  this.loginPage = new LoginPage(this.page);
 });
 
 /**
@@ -30,8 +31,21 @@ Before(async function (this: Fixture) {
  * Used for step-level preparation, logging, or state validation
  * Can be useful for debugging or adding custom behavior before each step execution
  */
-BeforeStep(async function (this: Fixture) {
-  // Pre-step logic here
+
+BeforeStep(function ({ gherkinDocument, pickleStep }) {
+  const featureChildren = gherkinDocument?.feature?.children ?? [];
+
+  for (const child of featureChildren) {
+    if (child.scenario) {
+      const steps = child.scenario.steps ?? [];
+      const gherkinStep = steps.find(s => s.text === pickleStep.text);
+
+      if (gherkinStep) {
+        this.currentStepKeyword = gherkinStep.keyword.trim();
+        return;
+      }
+    }
+  }
 });
 
 /**
@@ -39,10 +53,39 @@ BeforeStep(async function (this: Fixture) {
  * Used for step-level cleanup, screenshot capture on failures, or logging
  * Currently captures screenshots when steps fail for debugging purposes
  */
-AfterStep(async function (this: Fixture, { result }) {
-  if (result?.status === 'FAILED') {
-    const screenshot = await this.page.screenshot();
-    this.attach(screenshot, 'image/png');
+AfterStep(async function (this: Fixture, { result, pickleStep }) {
+  const keyword = this.currentStepKeyword ?? '';
+  const stepText = pickleStep.text;
+
+  if (!result) return;
+
+  const fullStep = `${keyword} ${stepText}`;
+
+  switch (result.status) {
+    case Status.PASSED:
+      console.log(chalk.green(`✔ ${fullStep}`));
+      break;
+
+    case Status.FAILED:
+      this.attach(await this.page.screenshot(), 'image/png');
+      console.log(chalk.red(`✘ ${fullStep}`));
+      console.error('\n' + chalk.red(result.message));
+      break;
+
+    case Status.SKIPPED:
+      console.log(chalk.yellow(`↷ ${fullStep}`));
+      break;
+
+    case Status.PENDING:
+      console.log(chalk.yellow(`⚠ ${fullStep}`));
+      break;
+
+    case Status.UNDEFINED:
+      console.log(chalk.red(`? ${fullStep}`));
+      break;
+
+    default:
+      break;
   }
 });
 

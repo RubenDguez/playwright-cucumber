@@ -1,4 +1,6 @@
-import process from 'node:process';
+import dotenv from 'dotenv';
+
+dotenv.config({ override: true, quiet: true });
 
 export default {
   // Paths to where your feature files are located
@@ -23,7 +25,7 @@ export default {
 
   // Name/path and output file path of each formatter to use
   // Controls how test results are displayed and where they're saved
-  format: process.env.CI !== 'true' ? ['@cucumber/pretty-formatter'] : ['allure-cucumberjs/reporter'],
+  format: ['allure-cucumberjs/reporter'],
 
   // Options to be provided to formatters
   // Configuration object passed to the selected formatters
