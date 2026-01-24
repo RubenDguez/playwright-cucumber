@@ -1,6 +1,7 @@
 pre-commit:
   parallel: true
   jobs:
+    - run: bun test
     - run: npx eslint --fix "{staged_files}"
       glob:
         - '*.ts'
