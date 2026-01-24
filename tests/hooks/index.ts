@@ -1,15 +1,18 @@
-import { After, AfterAll, AfterStep, Before, BeforeAll, BeforeStep, Status } from '@cucumber/cucumber';
+import { After, AfterAll, AfterStep, Before, BeforeAll, BeforeStep, ITestCaseHookParameter, Status } from '@cucumber/cucumber';
 import { Fixture } from '@fixtures/world';
-import TodoPage from '@pages/TodoPage';
-import { chromium, request } from '@playwright/test';
+import fs from 'fs';
+import path from 'path';
+import { browserload, pageload } from './Loaders';
+
+const tempDir = path.join(process.cwd(), 'temp');
 
 /**
  * BeforeAll hook - Runs once before all scenarios in the test run
  * Used for global setup that should happen once across all tests
  * Examples: Starting servers, initializing test data, setting up databases
  */
-BeforeAll({ name: 'Config BeforeAll' }, async function () {
-  // Global setup code here
+BeforeAll({ name: 'Setup BeforeAll' }, async function () {
+  if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir);
 });
 
 /**
@@ -17,22 +20,9 @@ BeforeAll({ name: 'Config BeforeAll' }, async function () {
  * Used for scenario-level setup like browser initialization, navigation, etc.
  * This is where you typically set up the test environment for each scenario
  */
-Before({ name: 'Config Before' }, async function (this: Fixture, world) {
-  const isApiTest = world.pickle.tags.some(tag => tag.name === '@api');
-
-  if (isApiTest) {
-    this.request = await request.newContext();
-    return;
-  }
-
-  const headless = process.env.HEADLESS === 'false' ? false : true;
-  this.browser = await chromium.launch({ headless, timeout: 60000 });
-  this.context = await this.browser.newContext();
-  this.page = await this.context.newPage();
-  this.request = await request.newContext();
-
-  // Initialize Page Objects
-  this.todoPage = new TodoPage(this.page);
+Before({ name: 'Config Before' }, async function (this: Fixture, world: ITestCaseHookParameter) {
+  await browserload.call(this, world);
+  await pageload.call(this);
 });
 
 /**
@@ -80,6 +70,6 @@ After({ name: 'Config After' }, async function (this: Fixture) {
  * Used for global cleanup that should happen once after all tests finish
  * Examples: Stopping servers, cleaning up test data, generating reports
  */
-AfterAll({ name: 'Config AfterAll' }, async function () {
-  // Global cleanup code here
+AfterAll({ name: 'Setup AfterAll' }, async function () {
+  if (fs.existsSync(tempDir)) fs.rmSync(tempDir, { recursive: true });
 });

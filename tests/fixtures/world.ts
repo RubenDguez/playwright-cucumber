@@ -18,7 +18,7 @@ export class Fixture extends World {
   response!: APIResponse;
 
   // Logger
-  logger!: ReturnType<typeof Logger>;
+  logger: ReturnType<typeof Logger> = Logger('PlayCuke');
 
   // In memory storage for sharing data between steps
   localStorage: LocalStorage = LocalStorage.instance;
