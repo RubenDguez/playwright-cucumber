@@ -1,6 +1,5 @@
 import { After, AfterAll, AfterStep, Before, BeforeAll, BeforeStep, Status } from '@cucumber/cucumber';
 import { Fixture } from '@fixtures/world';
-import TodoPage from '@pages/TodoPage';
 import { chromium } from '@playwright/test';
 
 /**
@@ -18,11 +17,9 @@ BeforeAll(async function () {
  * This is where you typically set up the test environment for each scenario
  */
 Before(async function (this: Fixture) {
-  this.browser = await chromium.launch({ headless: false, timeout: 60000 });
+  this.browser = await chromium.launch({ headless: true, timeout: 60000 });
   this.context = await this.browser.newContext();
   this.page = await this.context.newPage();
-
-  this.todoPage = new TodoPage(this.page);
 });
 
 /**

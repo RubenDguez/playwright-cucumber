@@ -1,5 +1,5 @@
 import { Given, When, Then } from '@cucumber/cucumber';
-import { Fixture } from 'tests/fixtures/world';
+import { Fixture } from '@fixtures/world';
 
 Given('the user navigates to the TodoMVC application', async function (this: Fixture) {
   await this.todoPage.navigate();
