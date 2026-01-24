@@ -1,7 +1,6 @@
 pre-commit:
   parallel: true
   jobs:
-    - run: bun test
     - run: npx eslint --fix "{staged_files}"
       glob:
         - '*.ts'
@@ -20,3 +19,8 @@ pre-commit:
         - '*.mjs'
         - '*.cjs'
       stage_fixed: true
+
+pre-push:
+  parallel: true
+  jobs:
+    - run: bun test
