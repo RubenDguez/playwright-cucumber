@@ -13,6 +13,7 @@
       "@support/*": ["tests/support/*"],
       "@pages/*": ["tests/pages/*"],
       "@steps/*": ["tests/steps/*"],
+      "@fixtures/*": ["tests/fixtures/*"],
     }
   },
   "include": ["tests/**/*.ts"]
