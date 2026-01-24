@@ -1,0 +1,20 @@
+name: Main
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: node:24
+    steps:
+      - uses: actions/checkout@v5
+      - run: npm install
+      - run: npx playwright install --with-deps
+      - run: npm run test
+      - run: npm run allure:generate
+      - uses: actions/upload-artifact@v6
+        with:
+          name: allure-report
+          path: allure-report
