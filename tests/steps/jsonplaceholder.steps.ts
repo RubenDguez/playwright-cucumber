@@ -9,22 +9,22 @@ interface TodoItem {
   completed?: boolean;
 }
 
-let apiEndpoint: string;
 let responseBody: TodoItem;
 
 Given('the API endpoint {string}', async function (this: Fixture, endpoint: string) {
-  apiEndpoint = endpoint;
+  this.localStorage.clear();
+  this.localStorage.setItem('endpoint', endpoint);
 });
 
 Given('a todo item with ID {int} exists', async function (this: Fixture, id: number) {
   // Verify the todo item exists by making a GET request
-  const checkResponse = await this.request.get(`${apiEndpoint}/${id}`);
+  const checkResponse = await this.request.get(`${this.localStorage.getItem('endpoint')}/${id}`);
   expect(checkResponse.status()).toBe(200);
 });
 
 When('I create a new todo item with title {string} and completed status {word}', async function (this: Fixture, title: string, completedStatus: string) {
   const completed = completedStatus === 'true';
-  this.response = await this.request.post(apiEndpoint, {
+  this.response = await this.request.post(this.localStorage.getItem('endpoint'), {
     data: {
       title,
       completed,
@@ -38,13 +38,13 @@ When('I create a new todo item with title {string} and completed status {word}',
 });
 
 When('I retrieve the todo item with ID {int}', async function (this: Fixture, id: number) {
-  this.response = await this.request.get(`${apiEndpoint}/${id}`);
+  this.response = await this.request.get(`${this.localStorage.getItem('endpoint')}/${id}`);
   responseBody = await this.response.json();
 });
 
 When('I update the todo item with ID {int} to have title {string} and completed status {word}', async function (this: Fixture, id: number, title: string, completedStatus: string) {
   const completed = completedStatus === 'true';
-  this.response = await this.request.put(`${apiEndpoint}/${id}`, {
+  this.response = await this.request.put(`${this.localStorage.getItem('endpoint')}/${id}`, {
     data: {
       id,
       title,
@@ -59,7 +59,7 @@ When('I update the todo item with ID {int} to have title {string} and completed 
 });
 
 When('I delete the todo item with ID {int}', async function (this: Fixture, id: number) {
-  this.response = await this.request.delete(`${apiEndpoint}/${id}`);
+  this.response = await this.request.delete(`${this.localStorage.getItem('endpoint')}/${id}`);
   responseBody = await this.response.json();
 });
 
@@ -81,7 +81,7 @@ Then('retrieving the todo item with ID {int} should return a status code of {int
   // Note: JSONPlaceholder is a mock API and doesn't actually delete items
   // It returns 200 for GET requests even after "deletion"
   // In a real API, this would return 404
-  const verifyResponse = await this.request.get(`${apiEndpoint}/${id}`);
+  const verifyResponse = await this.request.get(`${this.localStorage.getItem('endpoint')}/${id}`);
   // JSONPlaceholder returns 200 even for "deleted" items, but a real API would return 404
   // We'll check the status but log a note about the mock API behavior
   const actualStatus = verifyResponse.status();

@@ -10,7 +10,7 @@
     "types": ["@playwright/test", "node"],
     "baseUrl": ".",
     "paths": {
-      "@support/*": ["tests/support/*"],
+      "@support/*": ["support/*"],
       "@pages/*": ["tests/pages/*"],
       "@steps/*": ["tests/steps/*"],
       "@fixtures/*": ["tests/fixtures/*"],
