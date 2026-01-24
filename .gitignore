@@ -220,3 +220,4 @@ pnpm-lock.yaml
 .stylelintcache
 
 log/
+.history/

@@ -1,10 +1,11 @@
 import { defineConfig } from 'allure';
+import os from 'os';
 
 export default defineConfig({
   name: 'Allure Report',
   output: './allure-report',
-  historyPath: './history.jsonl',
-  appendHistory: true,
+  historyPath: './.history/history.jsonl',
+  appendHistory: false,
   qualityGate: {
     rules: [
       {
@@ -52,24 +53,24 @@ export default defineConfig({
   },
   environments: {
     windows: {
-      matcher: ({ labels }) => labels.find(({ name, value }) => name === 'os' && value === 'Windows'),
+      matcher: () => os.platform() === 'win32',
       variables: {
-        OS: 'Windows 11',
-        Architecture: 'x64',
+        OS: os.type(),
+        Architecture: os.arch(),
       },
     },
     macos: {
-      matcher: ({ labels }) => labels.find(({ name, value }) => name === 'os' && value === 'macOS'),
+      matcher: () => os.platform() === 'darwin',
       variables: {
-        OS: 'macOS',
-        Architecture: 'arm64',
+        OS: os.type(),
+        Architecture: os.arch(),
       },
     },
     linux: {
-      matcher: ({ labels }) => labels.find(({ name, value }) => name === 'os' && value === 'Linux'),
+      matcher: () => os.platform() === 'linux',
       variables: {
-        OS: 'Ubuntu 22.04',
-        Architecture: 'x64',
+        OS: os.type(),
+        Architecture: os.arch(),
       },
     },
   },
