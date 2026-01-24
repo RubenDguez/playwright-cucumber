@@ -1,5 +1,5 @@
 import { IWorldOptions, setDefaultTimeout, setWorldConstructor, World } from '@cucumber/cucumber';
-import { Browser, BrowserContext, Page } from '@playwright/test';
+import { APIRequestContext, APIResponse, Browser, BrowserContext, Page } from '@playwright/test';
 import Logger from '@argenis.dominguez/logger';
 import TodoPage from '@pages/TodoPage';
 
@@ -11,6 +11,10 @@ export class Fixture extends World {
 
   // Page Objects
   todoPage!: TodoPage;
+
+  // API Request Context
+  request!: APIRequestContext;
+  response!: APIResponse;
 
   // Logger
   logger!: ReturnType<typeof Logger>;

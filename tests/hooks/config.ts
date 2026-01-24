@@ -1,6 +1,6 @@
 import { After, AfterAll, AfterStep, Before, BeforeAll, BeforeStep, Status } from '@cucumber/cucumber';
 import { Fixture } from '@fixtures/world';
-import { chromium } from '@playwright/test';
+import { chromium, request } from '@playwright/test';
 
 /**
  * BeforeAll hook - Runs once before all scenarios in the test run
@@ -20,6 +20,8 @@ Before(async function (this: Fixture) {
   this.browser = await chromium.launch({ headless: true, timeout: 60000 });
   this.context = await this.browser.newContext();
   this.page = await this.context.newPage();
+
+  this.request = await request.newContext();
 });
 
 /**
@@ -56,9 +58,10 @@ AfterStep(async function (this: Fixture, { result }) {
  * This ensures proper cleanup after each test scenario completes
  */
 After(async function (this: Fixture) {
-  await this.page.close();
-  await this.context.close();
-  await this.browser.close();
+  if (this.request) await this.request.dispose();
+  if (this.page) await this.page.close();
+  if (this.context) await this.context.close();
+  if (this.browser) await this.browser.close();
 });
 
 /**
