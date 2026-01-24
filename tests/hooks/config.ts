@@ -7,7 +7,7 @@ import { chromium, request } from '@playwright/test';
  * Used for global setup that should happen once across all tests
  * Examples: Starting servers, initializing test data, setting up databases
  */
-BeforeAll(async function () {
+BeforeAll({ name: 'Config BeforeAll' }, async function () {
   // Global setup code here
 });
 
@@ -16,11 +16,18 @@ BeforeAll(async function () {
  * Used for scenario-level setup like browser initialization, navigation, etc.
  * This is where you typically set up the test environment for each scenario
  */
-Before(async function (this: Fixture) {
-  this.browser = await chromium.launch({ headless: true, timeout: 60000 });
+Before({ name: 'Config Before' }, async function (this: Fixture, world) {
+  const isApiTest = world.pickle.tags.some(tag => tag.name === '@api');
+
+  if (isApiTest) {
+    this.request = await request.newContext();
+    return;
+  }
+
+  const headless = process.env.HEADLESS === 'false' ? false : true;
+  this.browser = await chromium.launch({ headless, timeout: 60000 });
   this.context = await this.browser.newContext();
   this.page = await this.context.newPage();
-
   this.request = await request.newContext();
 });
 
@@ -30,7 +37,7 @@ Before(async function (this: Fixture) {
  * Can be useful for debugging or adding custom behavior before each step execution
  */
 
-BeforeStep(function (this: Fixture) {
+BeforeStep(async function (this: Fixture) {
   // Log the current step keyword and text for debugging purposes
 });
 
@@ -57,7 +64,7 @@ AfterStep(async function (this: Fixture, { result }) {
  * Used for scenario-level cleanup like closing browsers, clearing data, etc.
  * This ensures proper cleanup after each test scenario completes
  */
-After(async function (this: Fixture) {
+After({ name: 'Config After' }, async function (this: Fixture) {
   if (this.request) await this.request.dispose();
   if (this.page) await this.page.close();
   if (this.context) await this.context.close();
@@ -69,6 +76,6 @@ After(async function (this: Fixture) {
  * Used for global cleanup that should happen once after all tests finish
  * Examples: Stopping servers, cleaning up test data, generating reports
  */
-AfterAll(async function () {
+AfterAll({ name: 'Config AfterAll' }, async function () {
   // Global cleanup code here
 });

@@ -2,17 +2,23 @@
   "name": "playwright-cucumber",
   "version": "1.0.0",
   "scripts": {
-    "test": "cucumber-js --config cucumber.ts",
+    "test": "cucumber-js --config cucumber.ts tests/features/**/*.feature",
+    "feature": "cucumber-js --config cucumber.ts",
     "lint": "npx eslint . --fix",
     "prettier": "npx prettier . --write",
-    "allure:generate": "npx allure generate -c -o allure-report",
-    "allure:open": "npx allure open --port 8080 -h localhost",
+    "allure:generate": "npx allure generate -o allure-report",
+    "allure:open": "npx allure open",
     "allure": "npm run allure:generate && npm run allure:open"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "playwright",
+    "cucumber",
+    "bdd",
+    "testing"
+  ],
+  "author": "Argenis Dominguez",
   "license": "ISC",
-  "description": "",
+  "description": "Playwright Cucumber integration for BDD testing",
   "engines": {
     "node": "24"
   },
@@ -23,8 +29,9 @@
     "@eslint/js": "^9.39.2",
     "@playwright/test": "^1.57.0",
     "@types/node": "^25.0.9",
-    "allure-commandline": "^2.36.0",
+    "allure": "^3.0.1",
     "allure-cucumberjs": "^3.4.5",
+    "chalk": "^5.6.2",
     "dotenv": "^17.2.3",
     "eslint": "^9.39.2",
     "globals": "^17.0.0",
@@ -35,8 +42,5 @@
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.53.0"
-  },
-  "dependencies": {
-    "chalk": "^5.6.2"
   }
 }

@@ -4,10 +4,10 @@ import path from 'path';
 
 const tempDir = path.join(process.cwd(), 'temp');
 
-BeforeAll(async function () {
+BeforeAll({ name: 'Setup BeforeAll' }, async function () {
   if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir);
 });
 
-AfterAll(async function () {
+AfterAll({ name: 'Setup AfterAll' }, async function () {
   if (fs.existsSync(tempDir)) fs.rmSync(tempDir, { recursive: true });
 });

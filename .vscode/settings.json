@@ -1,11 +1,14 @@
 {
   "cSpell.words": [
+    "autem",
     "cucumberjs",
+    "delectus",
     "ehthumbs",
     "eslintcache",
     "jscoverage",
     "jspm",
     "Microbundle",
+    "networkidle",
     "Nuxt",
     "pids",
     "prettiercache",
@@ -14,5 +17,6 @@
     "vuepress",
     "wdio",
     "wscript"
-  ]
+  ],
+  "cucumberautocomplete.steps": ["tests/steps/**/*.ts"]
 }

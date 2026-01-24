@@ -6,20 +6,19 @@ import { Page, Locator, expect } from '@playwright/test';
  * Base URL: https://demo.playwright.dev/todomvc
  */
 export default class TodoPage {
-  private readonly page: Page;
+  constructor(private readonly page: Page) {}
 
-  // Locators - Centralized element selectors
-  private readonly todoInput: Locator;
-  private readonly todoList: Locator;
-  private readonly todoItems: Locator;
+  // Locators - Centralized element selectors via getters
+  private get todoInput(): Locator {
+    return this.page.getByPlaceholder('What needs to be done?');
+  }
 
-  constructor(page: Page) {
-    this.page = page;
+  private get todoList(): Locator {
+    return this.page.locator('.todo-list');
+  }
 
-    // Initialize locators with resilient selectors
-    this.todoInput = page.getByPlaceholder('What needs to be done?');
-    this.todoList = page.locator('.todo-list');
-    this.todoItems = page.locator('.todo-list li');
+  private get todoItems(): Locator {
+    return this.page.locator('.todo-list li');
   }
 
   /**
@@ -27,6 +26,8 @@ export default class TodoPage {
    */
   async navigate(): Promise<void> {
     await this.page.goto('https://demo.playwright.dev/todomvc');
+    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForTimeout(2000);
   }
 
   /**

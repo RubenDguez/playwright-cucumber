@@ -6,7 +6,7 @@ dotenv.config({ override: true, quiet: true });
 export default {
   // Paths to where your feature files are located
   // Supports glob patterns to find .feature files
-  paths: ['tests/features/**/*.feature'],
+  paths: [],
 
   // Show the full backtrace for errors
   // When true, displays complete stack traces for debugging
@@ -26,12 +26,14 @@ export default {
 
   // Name/path and output file path of each formatter to use
   // Controls how test results are displayed and where they're saved
-  format: ['allure-cucumberjs/reporter:./temp/ignore.txt', 'pretty'],
+  format: ['pretty', 'allure-cucumberjs/reporter:./allure-results/ignore.txt'],
 
   // Options to be provided to formatters
   // Configuration object passed to the selected formatters
   formatOptions: {
-    resultsDir: 'allure-results',
+    pretty: {
+      featuresAndRules: true,
+    },
   },
 
   // Paths to where your support code is (ES modules)

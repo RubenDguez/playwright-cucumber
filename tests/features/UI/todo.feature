@@ -1,3 +1,10 @@
+@allure.label.epic:WebInterface
+@allure.label.feature:EssentialFeatures
+@allure.label.story:Authentication
+
+@allure.label.parentSuite:UI
+@allure.label.suite:TodoMVC
+
 @todo @poc
 Feature: TodoMVC Basic User Workflows
   As a user of the TodoMVC application
@@ -8,18 +15,27 @@ Feature: TodoMVC Basic User Workflows
     Given the user navigates to the TodoMVC application
 
   @smoke @AC-01
+  @allure.label.subSuite:PageLoad
   Scenario: Page loads correctly
     Then the page title should contain "TodoMVC"
     And the todo input field should be visible
     And the todo input field should be enabled
 
   @smoke @AC-02
-  Scenario: User creates a new todo
-    When the user creates a todo with text "Buy groceries"
-    Then the todo "Buy groceries" should appear in the list
-    And the todo "Buy groceries" should be in active state
+  @allure.label.subSuite:Create
+  Scenario Outline: User creates a new todo with title "<title>"
+    When the user creates a todo with text "<title>"
+    Then the todo "<title>" should appear in the list
+    And the todo "<title>" should be in active state
+
+    Examples:
+      | title         |
+      | Buy groceries |
+      | Walk the dog  |
+      | Read a book   |
 
   @smoke @AC-03
+  @allure.label.subSuite:Update
   Scenario: User completes a todo
     When the user creates a todo with text "Complete project report"
     And the user marks the todo "Complete project report" as completed
@@ -27,6 +43,7 @@ Feature: TodoMVC Basic User Workflows
     And the completed state should be reflected in the DOM
 
   @smoke @AC-04
+  @allure.label.subSuite:Delete
   Scenario: User deletes a todo
     When the user creates a todo with text "Delete me"
     And the user deletes the todo "Delete me"
