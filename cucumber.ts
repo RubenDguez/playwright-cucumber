@@ -1,3 +1,4 @@
+import type { IConfiguration } from '@cucumber/cucumber';
 import dotenv from 'dotenv';
 
 dotenv.config({ override: true, quiet: true });
@@ -5,7 +6,7 @@ dotenv.config({ override: true, quiet: true });
 export default {
   // Paths to where your feature files are located
   // Supports glob patterns to find .feature files
-  paths: ['tests/**/*.feature'],
+  paths: ['tests/features/**/*.feature'],
 
   // Show the full backtrace for errors
   // When true, displays complete stack traces for debugging
@@ -25,11 +26,13 @@ export default {
 
   // Name/path and output file path of each formatter to use
   // Controls how test results are displayed and where they're saved
-  format: ['allure-cucumberjs/reporter'],
+  format: ['allure-cucumberjs/reporter:./temp/ignore.txt', 'pretty'],
 
   // Options to be provided to formatters
   // Configuration object passed to the selected formatters
-  formatOptions: {},
+  formatOptions: {
+    resultsDir: 'allure-results',
+  },
 
   // Paths to where your support code is (ES modules)
   // Used when loading files with ES module syntax
@@ -98,4 +101,4 @@ export default {
   // Parameters to be passed to your World constructor
   // Available in step definitions through this.parameters
   worldParameters: {},
-};
+} satisfies Partial<IConfiguration>;

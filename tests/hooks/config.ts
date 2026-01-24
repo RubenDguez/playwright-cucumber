@@ -1,8 +1,11 @@
 import { Before, After, BeforeAll, AfterAll, BeforeStep, AfterStep, Status } from '@cucumber/cucumber';
-import { Fixture } from 'tests/support/world';
+import { Fixture } from 'tests/fixtures/world';
 import { chromium } from '@playwright/test';
-import LoginPage from '@pages/Login';
+import TodoPage from '@pages/TodoPage';
 import chalk from 'chalk';
+import fs from 'fs';
+import path from 'path';
+import crypto from 'crypto';
 
 /**
  * BeforeAll hook - Runs once before all scenarios in the test run
@@ -23,7 +26,7 @@ Before(async function (this: Fixture) {
   this.context = await this.browser.newContext();
   this.page = await this.context.newPage();
 
-  this.loginPage = new LoginPage(this.page);
+  this.todoPage = new TodoPage(this.page);
 });
 
 /**
@@ -32,20 +35,8 @@ Before(async function (this: Fixture) {
  * Can be useful for debugging or adding custom behavior before each step execution
  */
 
-BeforeStep(function ({ gherkinDocument, pickleStep }) {
-  const featureChildren = gherkinDocument?.feature?.children ?? [];
-
-  for (const child of featureChildren) {
-    if (child.scenario) {
-      const steps = child.scenario.steps ?? [];
-      const gherkinStep = steps.find(s => s.text === pickleStep.text);
-
-      if (gherkinStep) {
-        this.currentStepKeyword = gherkinStep.keyword.trim();
-        return;
-      }
-    }
-  }
+BeforeStep(function (this: Fixture) {
+  // Log the current step keyword and text for debugging purposes
 });
 
 /**
@@ -53,35 +44,21 @@ BeforeStep(function ({ gherkinDocument, pickleStep }) {
  * Used for step-level cleanup, screenshot capture on failures, or logging
  * Currently captures screenshots when steps fail for debugging purposes
  */
-AfterStep(async function (this: Fixture, { result, pickleStep }) {
-  const keyword = this.currentStepKeyword ?? '';
-  const stepText = pickleStep.text;
-
+AfterStep(async function (this: Fixture, { result }) {
   if (!result) return;
 
-  const fullStep = `${keyword} ${stepText}`;
-
   switch (result.status) {
-    case Status.PASSED:
-      console.log(chalk.green(`✔ ${fullStep}`));
-      break;
-
     case Status.FAILED:
-      this.attach(await this.page.screenshot(), 'image/png');
-      console.log(chalk.red(`✘ ${fullStep}`));
-      console.error('\n' + chalk.red(result.message));
-      break;
+      console.error(chalk.red([result.message?.split('\n').pop()].join('\n')));
 
-    case Status.SKIPPED:
-      console.log(chalk.yellow(`↷ ${fullStep}`));
-      break;
+      if (process.env.CI === 'true') {
+        const dirpath = path.join(process.cwd(), 'screenshot');
+        if (!fs.existsSync(dirpath)) fs.mkdirSync(dirpath, { recursive: true });
+        fs.writeFileSync(path.join(dirpath, crypto.randomUUID() + '.png'), await this.page.screenshot(), { encoding: 'base64', flag: 'w' });
+      } else {
+        this.attach(await this.page.screenshot(), 'image/png');
+      }
 
-    case Status.PENDING:
-      console.log(chalk.yellow(`⚠ ${fullStep}`));
-      break;
-
-    case Status.UNDEFINED:
-      console.log(chalk.red(`? ${fullStep}`));
       break;
 
     default:
