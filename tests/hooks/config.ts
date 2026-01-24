@@ -1,5 +1,6 @@
 import { After, AfterAll, AfterStep, Before, BeforeAll, BeforeStep, Status } from '@cucumber/cucumber';
 import { Fixture } from '@fixtures/world';
+import TodoPage from '@pages/TodoPage';
 import { chromium, request } from '@playwright/test';
 
 /**
@@ -29,6 +30,9 @@ Before({ name: 'Config Before' }, async function (this: Fixture, world) {
   this.context = await this.browser.newContext();
   this.page = await this.context.newPage();
   this.request = await request.newContext();
+
+  // Initialize Page Objects
+  this.todoPage = new TodoPage(this.page);
 });
 
 /**
