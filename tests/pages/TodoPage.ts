@@ -27,7 +27,6 @@ export default class TodoPage {
   async navigate(): Promise<void> {
     await this.page.goto('https://demo.playwright.dev/todomvc');
     await this.page.waitForLoadState('networkidle');
-    await this.page.waitForTimeout(2000);
   }
 
   /**
