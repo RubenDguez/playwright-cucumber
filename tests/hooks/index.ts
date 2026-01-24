@@ -1,8 +1,8 @@
-import { After, AfterAll, AfterStep, Before, BeforeAll, BeforeStep, ITestCaseHookParameter, Status } from '@cucumber/cucumber';
+import { After, AfterAll, AfterStep, Before, BeforeAll, BeforeStep, Status } from '@cucumber/cucumber';
 import { Fixture } from '@fixtures/world';
 import fs from 'fs';
 import path from 'path';
-import { browserload, pageload } from './Loaders';
+import { api, browser, pages, teardown } from './Loaders';
 
 const tempDir = path.join(process.cwd(), 'temp');
 
@@ -20,9 +20,13 @@ BeforeAll({ name: 'Setup BeforeAll' }, async function () {
  * Used for scenario-level setup like browser initialization, navigation, etc.
  * This is where you typically set up the test environment for each scenario
  */
-Before({ name: 'Config Before' }, async function (this: Fixture, world: ITestCaseHookParameter) {
-  await browserload.call(this, world);
-  await pageload.call(this);
+Before({ name: 'Configure UI', tags: '@ui' }, async function (this: Fixture) {
+  await browser.call(this);
+  await pages.call(this);
+});
+
+Before({ name: 'Configure API', tags: '@api' }, async function (this: Fixture) {
+  await api.call(this);
 });
 
 /**
@@ -58,11 +62,8 @@ AfterStep(async function (this: Fixture, { result }) {
  * Used for scenario-level cleanup like closing browsers, clearing data, etc.
  * This ensures proper cleanup after each test scenario completes
  */
-After({ name: 'Config After' }, async function (this: Fixture) {
-  if (this.request) await this.request.dispose();
-  if (this.page) await this.page.close();
-  if (this.context) await this.context.close();
-  if (this.browser) await this.browser.close();
+After({ name: 'Teardown' }, async function (this: Fixture) {
+  await teardown.call(this);
 });
 
 /**

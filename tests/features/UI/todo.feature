@@ -5,7 +5,7 @@
 @allure.label.parentSuite:UI
 @allure.label.suite:TodoMVC
 
-@todo @poc
+@todo @poc @ui
 Feature: TodoMVC Basic User Workflows
   As a user of the TodoMVC application
   I want to manage my todo items
