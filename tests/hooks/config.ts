@@ -1,11 +1,7 @@
-import { Before, After, BeforeAll, AfterAll, BeforeStep, AfterStep, Status } from '@cucumber/cucumber';
+import { After, AfterAll, AfterStep, Before, BeforeAll, BeforeStep, Status } from '@cucumber/cucumber';
 import { Fixture } from '@fixtures/world';
-import { chromium } from '@playwright/test';
 import TodoPage from '@pages/TodoPage';
-import chalk from 'chalk';
-import fs from 'fs';
-import path from 'path';
-import crypto from 'crypto';
+import { chromium } from '@playwright/test';
 
 /**
  * BeforeAll hook - Runs once before all scenarios in the test run
@@ -49,16 +45,7 @@ AfterStep(async function (this: Fixture, { result }) {
 
   switch (result.status) {
     case Status.FAILED:
-      console.error(chalk.red([result.message?.split('\n').pop()].join('\n')));
-
-      if (process.env.CI === 'true') {
-        const dirpath = path.join(process.cwd(), 'screenshot');
-        if (!fs.existsSync(dirpath)) fs.mkdirSync(dirpath, { recursive: true });
-        fs.writeFileSync(path.join(dirpath, crypto.randomUUID() + '.png'), await this.page.screenshot(), { encoding: 'base64', flag: 'w' });
-      } else {
-        this.attach(await this.page.screenshot(), 'image/png');
-      }
-
+      this.attach(await this.page.screenshot(), 'image/png');
       break;
 
     default:
