@@ -31,6 +31,7 @@ export default {
   // Options to be provided to formatters
   // Configuration object passed to the selected formatters
   formatOptions: {
+    colorsEnabled: true,
     pretty: {
       featuresAndRules: true,
     },

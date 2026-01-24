@@ -22,7 +22,7 @@ export default defineConfig({
         reportLanguage: 'en',
         open: false,
         // charts: chartLayout,
-        publish: true,
+        publish: false,
       },
     },
     dashboard: {
